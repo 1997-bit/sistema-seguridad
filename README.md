@@ -15,3 +15,4 @@ Integrantes: Arles, Gloria, Luis, Juan, Alex.
 
 - [Contrato](docs/contract.md)
 - [Tareas](docs/tasks.md)
+- [Enunciado](docs/assignment.md)
