@@ -13,6 +13,7 @@ CLIENT_ID = "ds8_seguridad_pico1"
 
 TOPIC_PUB_EVENTOS = b"ds8/security/pico1/events"
 TOPIC_PUB_TELEMETRIA = b"ds8/security/pico1/telemetry"
+TOPIC_PUB_ACK = b"ds8/security/pico1/ack"
 TOPIC_SUB_COMANDOS = b"ds8/security/pico1/commands"
 
 

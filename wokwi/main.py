@@ -11,7 +11,9 @@ cliente = None
 
 def procesar_comando(accion, origen):
     resultado = alarma.ejecutar_comando(accion)
-    print("[CMD]", {"action": accion, "source": origen, "result": resultado})
+    datos = {"action": accion, "source": origen, "result": resultado}
+    print("[CMD]", datos)
+    mqtt_client.publicar(cliente, mqtt_client.TOPIC_PUB_ACK, datos)
     return resultado
 
 
