@@ -20,13 +20,13 @@ def recepcion_comandos(topic, msg):
 
 
 def enviar_telemetria():
-    distancia = sensores.medir_distancia()
-    print("[TELEMETRIA]", {
+    datos = {
         "motion": int(sensores.hay_movimiento()),
-        "distance": distancia,
+        "distance": sensores.medir_distancia(),
         "state": alarma.estado,
-    })
-    cliente.publish(mqtt_client.TOPIC_PUB_TELEMETRIA, str(distancia).encode())
+    }
+    print("[TELEMETRIA]", datos)
+    mqtt_client.publicar(cliente, mqtt_client.TOPIC_PUB_TELEMETRIA, datos)
 
 
 def main():
@@ -55,8 +55,9 @@ def main():
         # Intrusion
         sensor = alarma.revisar()
         if sensor:
-            print("[EVENTO]", {"type": "intrusion", "sensor": sensor})
-            cliente.publish(mqtt_client.TOPIC_PUB_EVENTOS, sensor.encode())
+            datos = {"type": "intrusion", "sensor": sensor}
+            print("[EVENTO]", datos)
+            mqtt_client.publicar(cliente, mqtt_client.TOPIC_PUB_EVENTOS, datos)
 
         # LCD solo si cambia estado, evita parpadeo
         if alarma.estado != estado_antes:

@@ -2,6 +2,7 @@
 
 import network
 import time
+import ujson
 from umqttsimple import MQTTClient
 
 SSID = 'Wokwi-GUEST'
@@ -33,3 +34,7 @@ def conectar_broker(recepcion_comandos):
     cliente.subscribe(TOPIC_SUB_COMANDOS)
     print("MQTT conectado")
     return cliente
+
+
+def publicar(cliente, topic, datos):
+    cliente.publish(topic, ujson.dumps(datos))
