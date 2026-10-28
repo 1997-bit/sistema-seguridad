@@ -1,34 +1,50 @@
-# Loop principal: boton, intrusion, LCD y telemetria
+# Loop principal: boton, intrusion, LCD, telemetria y MQTT
 
 from time import sleep_ms
 import sensores
 import actuadores
 import alarma
+import mqtt_client
+
+cliente = None
 
 
 def procesar_comando(accion, origen):
     resultado = alarma.ejecutar_comando(accion)
-    print("[CMD]", {"action": accion, "source": origen, "result": resultado})
+    datos = {"accion": accion, "origen": origen, "resultado": resultado}
+    print("[CMD]", datos)
+    mqtt_client.publicar(cliente, mqtt_client.TOPIC_PUB_ACK, datos)
     return resultado
 
 
+def recepcion_comandos(topic, msg):
+    procesar_comando(msg.decode(), "mqtt")
+
+
 def enviar_telemetria():
-    # TODO: publicar por MQTT
-    print("[TELEMETRIA]", {
-        "motion": int(sensores.hay_movimiento()),
-        "distance": sensores.medir_distancia(),
-        "state": alarma.estado,
-    })
+    datos = {
+        "movimiento": int(sensores.hay_movimiento()),
+        "distancia": sensores.medir_distancia(),
+        "estado": alarma.estado,
+    }
+    print("[TELEMETRIA]", datos)
+    mqtt_client.publicar(cliente, mqtt_client.TOPIC_PUB_TELEMETRIA, datos)
 
 
 def main():
+    global cliente
     actuadores.iniciar()
+    mqtt_client.conectar_wifi()
+    cliente = mqtt_client.conectar_broker(recepcion_comandos)
 
     boton_antes = False
     estado_antes = None
     vueltas = 0
 
     while True:
+        # Comandos que llegan por MQTT
+        cliente.check_msg()
+
         # Boton: solo al presionar
         boton = sensores.boton_presionado()
         if boton and not boton_antes:
@@ -41,7 +57,9 @@ def main():
         # Intrusion
         sensor = alarma.revisar()
         if sensor:
-            print("[EVENTO]", {"type": "intrusion", "sensor": sensor})
+            datos = {"tipo": "intrusion", "sensor": sensor}
+            print("[EVENTO]", datos)
+            mqtt_client.publicar(cliente, mqtt_client.TOPIC_PUB_EVENTOS, datos)
 
         # LCD solo si cambia estado, evita parpadeo
         if alarma.estado != estado_antes:
