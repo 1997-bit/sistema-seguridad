@@ -1,98 +1,84 @@
 {
   "version": 1,
-  "author": "Arles - Sistema de Seguridad IoT",
+  "author": "Sistema de Seguridad",
   "editor": "wokwi",
   "parts": [
     {
       "type": "board-pi-pico-w",
       "id": "pico",
-      "top": 10,
-      "left": 20,
-      "attrs": { "env": "micropython-20220618-v1.19.1" }
+      "top": 6.35,
+      "left": 13.15,
+      "rotate": 90,
+      "attrs": { "env": "micropython-20241129-v1.24.1" }
     },
-    { "type": "wokwi-pir-motion-sensor", "id": "pir1", "top": -40, "left": 320, "attrs": {} },
+    {
+      "type": "wokwi-pir-motion-sensor",
+      "id": "pir1",
+      "top": 249.6,
+      "left": -64.42,
+      "rotate": 180,
+      "attrs": {}
+    },
     {
       "type": "wokwi-hc-sr04",
       "id": "ultra1",
-      "top": 120,
-      "left": 320,
-      "attrs": { "distance": "150" }
+      "top": 101.1,
+      "left": 154.5,
+      "rotate": 90,
+      "attrs": { "distance": "200" }
     },
-    { "type": "wokwi-reed-switch", "id": "door1", "top": 270, "left": 320, "attrs": {} },
     {
       "type": "wokwi-pushbutton",
-      "id": "button1",
-      "top": 419,
-      "left": 336,
-      "attrs": { "color": "blue", "label": "BOTON" }
-    },
-    {
-      "type": "wokwi-led",
-      "id": "ledRed",
-      "top": 236.4,
-      "left": 119,
-      "attrs": { "color": "red" }
-    },
-    {
-      "type": "wokwi-resistor",
-      "id": "r1",
-      "top": 283.2,
-      "left": 239.45,
+      "id": "btn1",
+      "top": -0.6,
+      "left": -64.2,
       "rotate": 90,
-      "attrs": { "value": "220" }
+      "attrs": { "color": "blue", "xray": "1", "bounce": "0" }
     },
     {
-      "type": "wokwi-led",
-      "id": "ledGreen",
-      "top": 322.8,
-      "left": 99.8,
-      "attrs": { "color": "green" }
+      "type": "wokwi-rgb-led",
+      "id": "rgb1",
+      "top": 153.4,
+      "left": -4.7,
+      "rotate": 180,
+      "attrs": { "common": "cathode" }
     },
     {
-      "type": "wokwi-resistor",
-      "id": "r2",
-      "top": 388.8,
-      "left": 258.65,
-      "rotate": 90,
-      "attrs": { "value": "220" }
+      "type": "wokwi-buzzer",
+      "id": "bz1",
+      "top": 110.7,
+      "left": -127.5,
+      "rotate": 270,
+      "attrs": {}
     },
-    { "type": "wokwi-buzzer", "id": "buzzer1", "top": 420, "left": 460, "attrs": {} },
-    { "type": "wokwi-servo", "id": "servo1", "top": 500, "left": 320, "attrs": {} },
     {
       "type": "wokwi-lcd1602",
       "id": "lcd1",
-      "top": 611.2,
-      "left": 101.6,
+      "top": -99.2,
+      "left": 168.8,
       "attrs": { "pins": "i2c" }
     }
   ],
   "connections": [
-    [ "pir1:VCC", "pico:3V3", "red", [] ],
-    [ "pir1:GND", "pico:GND.1", "black", [] ],
-    [ "pir1:OUT", "pico:GP16", "green", [] ],
-    [ "ultra1:VCC", "pico:VBUS", "red", [] ],
-    [ "ultra1:GND", "pico:GND.2", "black", [] ],
-    [ "ultra1:TRIG", "pico:GP2", "green", [] ],
-    [ "ultra1:ECHO", "pico:GP3", "blue", [] ],
-    [ "door1:1", "pico:GP14", "green", [] ],
-    [ "door1:2", "pico:GND.3", "black", [] ],
-    [ "button1:1.l", "pico:GP15", "green", [] ],
-    [ "button1:2.l", "pico:GND.4", "black", [] ],
-    [ "ledRed:A", "r1:1", "green", [] ],
-    [ "r1:2", "pico:GP18", "green", [] ],
-    [ "ledRed:C", "pico:GND.5", "black", [] ],
-    [ "ledGreen:A", "r2:1", "green", [] ],
-    [ "r2:2", "pico:GP19", "green", [] ],
-    [ "ledGreen:C", "pico:GND.6", "black", [] ],
-    [ "buzzer1:1", "pico:GND.7", "black", [] ],
-    [ "buzzer1:2", "pico:GP17", "green", [] ],
-    [ "servo1:V+", "pico:VBUS", "red", [] ],
-    [ "servo1:GND", "pico:GND.8", "black", [] ],
-    [ "servo1:PWM", "pico:GP20", "green", [] ],
-    [ "lcd1:GND", "pico:GND.9", "black", [] ],
-    [ "lcd1:VCC", "pico:VBUS", "red", [] ],
-    [ "lcd1:SDA", "pico:GP0", "green", [] ],
-    [ "lcd1:SCL", "pico:GP1", "blue", [] ]
+    [ "ultra1:TRIG", "pico:GP2", "green", [ "h-9.6", "v-83.2", "h-62.3" ] ],
+    [ "ultra1:ECHO", "pico:GP3", "blue", [ "h-19.2", "v-96.8", "h-71.9" ] ],
+    [ "lcd1:GND", "pico:GND.2", "black", [ "h-119.9" ] ],
+    [ "lcd1:VCC", "pico:VBUS", "red", [ "h-9.6", "v182.5", "h-9.6", "v14.49" ] ],
+    [ "lcd1:SDA", "pico:GP4", "green", [] ],
+    [ "lcd1:SCL", "pico:GP5", "blue", [] ],
+    [ "pir1:VCC", "pico:3V3", "red", [ "v-9.6", "h115.2", "h-4.7" ] ],
+    [ "bz1:1", "pico:GND.5", "black", [] ],
+    [ "rgb1:B", "pico:GP18", "blue", [ "v-19.2", "h-15.86" ] ],
+    [ "rgb1:G", "pico:GP19", "green", [ "v-28.8", "h-15.56" ] ],
+    [ "rgb1:COM", "pico:GND.6", "black", [ "v-9.2", "h4.8" ] ],
+    [ "pir1:GND", "pico:GND.7", "black", [ "v-19.2", "h101.16" ] ],
+    [ "bz1:2", "pico:GP16", "green", [ "h0" ] ],
+    [ "pir1:OUT", "pico:GP27", "green", [ "v-28.8", "h81.84" ] ],
+    [ "rgb1:R", "pico:GP22", "red", [ "v-19.2", "h4.9" ] ],
+    [ "btn1:2.r", "pico:GP15", "green", [ "v0.2", "h-4.86" ] ],
+    [ "btn1:1.r", "pico:GND.4", "green", [ "v0.2", "h-4.66" ] ],
+    [ "ultra1:GND", "pico:GND.8", "black", [ "h0" ] ],
+    [ "ultra1:VCC", "pico:VBUS", "red", [ "h-28.8", "v19.2", "h-23.9" ] ]
   ],
   "dependencies": {}
 }

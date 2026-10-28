@@ -7,8 +7,8 @@ Integrantes: Arles, Gloria, Luis, Juan, Alex.
 | | |
 |---|---|
 | Placa | Raspberry Pi Pico W (Wokwi) |
-| Sensores | PIR, HC-SR04, puerta |
-| Actuadores | Buzzer, LEDs, servo, LCD |
+| Sensores | PIR, HC-SR04, botón |
+| Actuadores | LED RGB, buzzer, LCD |
 | MQTT | HiveMQ |
 | BD | SQLite |
 | Nube | ThingSpeak |

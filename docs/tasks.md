@@ -2,8 +2,8 @@
 
 | Quién | Qué | Archivos |
 |---|---|---|
-| Arles | Circuito + sensores + capturas | `wokwi/diagram.json`, `wokwi/config.py`, `wokwi/sensors.py`, `docs/screenshots/` |
-| Gloria | Actuadores + alarma + main + zip Wokwi | `wokwi/actuators.py`, `wokwi/alarm.py`, `wokwi/main.py` |
+| Arles | Circuito + sensores + capturas | `wokwi/diagram.json`, `wokwi/config.py`, `wokwi/sensores.py`, `docs/screenshots/` |
+| Gloria | Actuadores + alarma + main + zip Wokwi | `wokwi/actuadores.py`, `wokwi/alarma.py`, `wokwi/main.py` |
 | Luis | MQTT + bridge + diagramas | `wokwi/mqtt_client.py`, `gateway/bridge.py`, `docs/architecture.md` |
 | Juan | Base de datos + ThingSpeak | `sql/`, `gateway/database.py`, `gateway/thingspeak.py`, `docs/cloud.md` |
 | Alex | README + requirements | `README.md`, `requirements.txt` |
