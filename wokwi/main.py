@@ -1,88 +1,60 @@
-# main.py
-# Sistema de Seguridad IoT
-# Bucle principal: sensores + alarma + actuadores + telemetria
-# Gloria - Parcial #2 DS8
+# Loop principal: boton, intrusion, LCD y telemetria
 
-import time
-import sensors
-import actuators
-import alarm
-import config
-
-# Historial de eventos del sistema: tuplas (tipo, sensor, timestamp_ms)
-EVENTS = []
-# Historial de comandos: tuplas (accion, fuente, resultado, timestamp_ms)
-COMMANDS = []
+from time import sleep_ms
+import sensores
+import actuadores
+import alarma
 
 
-def log_event(event_type, sensor):
-    EVENTS.append((event_type, sensor, time.ticks_ms()))
-    print("EVENT", {"type": event_type, "sensor": sensor})
+def procesar_comando(accion, origen):
+    resultado = alarma.ejecutar_comando(accion)
+    print("[CMD]", {"action": accion, "source": origen, "result": resultado})
+    return resultado
 
 
-def log_command(action, source, result):
-    COMMANDS.append((action, source, result, time.ticks_ms()))
-    print("CMD", {"action": action, "source": source, "result": result})
-
-
-def process_command(action, source="local"):
-    result = alarm.handle_command(action)
-    log_command(action, source, result)
-    return result
-
-
-def read_sensors():
-    return {
-        "motion": sensors.read_motion(),
-        "distance": sensors.read_distance(),
-        "door": sensors.door_open(),
-        "button": sensors.button_pressed(),
-    }
+def enviar_telemetria():
+    # TODO: publicar por MQTT
+    print("[TELEMETRIA]", {
+        "motion": int(sensores.hay_movimiento()),
+        "distance": sensores.medir_distancia(),
+        "state": alarma.estado,
+    })
 
 
 def main():
-    actuators.init_actuators()
-    alarm.disarm()
-    actuators.lcd_show("Sistema Seg.", "Desarmado")
-    time.sleep_ms(500)
+    actuadores.iniciar()
 
-    last_button = False
+    boton_antes = False
+    estado_antes = None
+    vueltas = 0
 
     while True:
-        data = read_sensors()
-
-        # Boton fisico: alterna armado/desarmado
-        if data["button"] and not last_button:
-            if alarm.get_state() == alarm.DISARMED:
-                process_command("arm", "button")
+        # Boton: solo al presionar
+        boton = sensores.boton_presionado()
+        if boton and not boton_antes:
+            if alarma.estado == alarma.DESARMADO:
+                procesar_comando("armar", "boton")
             else:
-                process_command("disarm", "button")
-            time.sleep_ms(200)
-        last_button = data["button"]
+                procesar_comando("desarmar", "boton")
+        boton_antes = boton
 
-        # Evaluar intrusion
-        intr = alarm.update()
-        if intr is not None:
-            sensor = intr[1][0] if isinstance(intr[1], tuple) else intr[1]
-            log_event("intrusion", sensor)
+        # Intrusion
+        sensor = alarma.revisar()
+        if sensor:
+            print("[EVENTO]", {"type": "intrusion", "sensor": sensor})
 
-        # Actualizar indicadores y LCD
-        state = alarm.get_state()
-        actuators.update_indicators(state)
-        dist = data["distance"]
-        dist_str = ("%.1f" % dist) if dist is not None else "--"
-        actuators.lcd_show(state, "D:" + dist_str + "cm")
+        # LCD solo si cambia estado, evita parpadeo
+        if alarma.estado != estado_antes:
+            actuadores.lcd_mostrar("Alarma:", alarma.estado)
+            estado_antes = alarma.estado
 
-        # Telemetria
-        print({
-            "motion": 1 if data["motion"] else 0,
-            "distance": dist,
-            "door": 1 if data["door"] else 0,
-            "state": state,
-        })
+        # Telemetria cada 10 vueltas = 1 s
+        vueltas += 1
+        if vueltas == 10:
+            enviar_telemetria()
+            vueltas = 0
 
-        time.sleep_ms(1000)
+        sleep_ms(100)
 
 
-if __name__ == "__main__":
-    main()
+main()
