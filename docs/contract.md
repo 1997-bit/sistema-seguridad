@@ -27,14 +27,14 @@ Comandos: `alarma.ejecutar_comando(accion)` → `"ok"` / `"error"`
 ## MQTT
 
 Broker: `broker.hivemq.com:1883`
-Base: `ds8/security/<device_id>`
+Base: `ds8/security/pico1`
 
 | Tópico | Payload |
 |---|---|
-| `/telemetry` | `{"motion":1,"distance":35.2,"state":"ARMADO"}` |
-| `/events` | `{"type":"intrusion","sensor":"pir"}` |
-| `/commands` | `{"id":12,"action":"armar"}` |
-| `/ack` | `{"id":12,"result":"ok"}` |
+| `/telemetry` | `{"movimiento":1,"distancia":35.2,"estado":"ARMADO"}` |
+| `/events` | `{"tipo":"intrusion","sensor":"pir"}` |
+| `/commands` | `armar` |
+| `/ack` | `{"accion":"armar","origen":"mqtt","resultado":"ok"}` |
 
 ## Base de datos (SQLite)
 

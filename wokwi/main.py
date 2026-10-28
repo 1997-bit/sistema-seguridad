@@ -11,7 +11,7 @@ cliente = None
 
 def procesar_comando(accion, origen):
     resultado = alarma.ejecutar_comando(accion)
-    datos = {"action": accion, "source": origen, "result": resultado}
+    datos = {"accion": accion, "origen": origen, "resultado": resultado}
     print("[CMD]", datos)
     mqtt_client.publicar(cliente, mqtt_client.TOPIC_PUB_ACK, datos)
     return resultado
@@ -23,9 +23,9 @@ def recepcion_comandos(topic, msg):
 
 def enviar_telemetria():
     datos = {
-        "motion": int(sensores.hay_movimiento()),
-        "distance": sensores.medir_distancia(),
-        "state": alarma.estado,
+        "movimiento": int(sensores.hay_movimiento()),
+        "distancia": sensores.medir_distancia(),
+        "estado": alarma.estado,
     }
     print("[TELEMETRIA]", datos)
     mqtt_client.publicar(cliente, mqtt_client.TOPIC_PUB_TELEMETRIA, datos)
@@ -57,7 +57,7 @@ def main():
         # Intrusion
         sensor = alarma.revisar()
         if sensor:
-            datos = {"type": "intrusion", "sensor": sensor}
+            datos = {"tipo": "intrusion", "sensor": sensor}
             print("[EVENTO]", datos)
             mqtt_client.publicar(cliente, mqtt_client.TOPIC_PUB_EVENTOS, datos)
 
