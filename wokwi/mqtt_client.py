@@ -7,7 +7,7 @@ from umqttsimple import MQTTClient
 SSID = 'Wokwi-GUEST'
 PASSWORD = ''
 
-MQTT_BROKER = "broker.emqx.io"
+MQTT_BROKER = "broker.hivemq.com"
 CLIENT_ID = "ds8_seguridad_pico1"
 
 TOPIC_PUB_EVENTOS = b"ds8/security/pico1/events"
