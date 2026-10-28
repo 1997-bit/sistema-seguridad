@@ -1,9 +1,12 @@
-# Loop principal: boton, intrusion, LCD y telemetria
+# Loop principal: boton, intrusion, LCD, telemetria y MQTT
 
 from time import sleep_ms
 import sensores
 import actuadores
 import alarma
+import mqtt_client
+
+cliente = None
 
 
 def procesar_comando(accion, origen):
@@ -12,23 +15,34 @@ def procesar_comando(accion, origen):
     return resultado
 
 
+def recepcion_comandos(topic, msg):
+    procesar_comando(msg.decode(), "mqtt")
+
+
 def enviar_telemetria():
-    # TODO: publicar por MQTT
+    distancia = sensores.medir_distancia()
     print("[TELEMETRIA]", {
         "motion": int(sensores.hay_movimiento()),
-        "distance": sensores.medir_distancia(),
+        "distance": distancia,
         "state": alarma.estado,
     })
+    cliente.publish(mqtt_client.TOPIC_PUB_TELEMETRIA, str(distancia).encode())
 
 
 def main():
+    global cliente
     actuadores.iniciar()
+    mqtt_client.conectar_wifi()
+    cliente = mqtt_client.conectar_broker(recepcion_comandos)
 
     boton_antes = False
     estado_antes = None
     vueltas = 0
 
     while True:
+        # Comandos que llegan por MQTT
+        cliente.check_msg()
+
         # Boton: solo al presionar
         boton = sensores.boton_presionado()
         if boton and not boton_antes:
@@ -42,6 +56,7 @@ def main():
         sensor = alarma.revisar()
         if sensor:
             print("[EVENTO]", {"type": "intrusion", "sensor": sensor})
+            cliente.publish(mqtt_client.TOPIC_PUB_EVENTOS, sensor.encode())
 
         # LCD solo si cambia estado, evita parpadeo
         if alarma.estado != estado_antes:
