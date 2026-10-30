@@ -1,6 +1,6 @@
 # Sistema de Seguridad IoT
 
-Parcial #2 — Desarrollo de Software VIII.
+Parcial #2
 
 Integrantes: Arles, Gloria, Luis, Juan, Alex.
 
@@ -12,6 +12,8 @@ Integrantes: Arles, Gloria, Luis, Juan, Alex.
 | MQTT | HiveMQ |
 | BD | SQLite |
 | Nube | ThingSpeak |
+
+![Circuito en Wokwi](docs/screenshots/wokwi.png)
 
 - [Contrato](docs/contract.md)
 - [Tareas](docs/tasks.md)
