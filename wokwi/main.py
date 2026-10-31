@@ -1,12 +1,14 @@
-# Loop principal: boton, intrusion, LCD, telemetria y MQTT
+# Loop principal: boton, intrusion, LCD, telemetria, MQTT y Adafruit
 
 from time import sleep_ms
 import sensores
 import actuadores
 import alarma
 import mqtt_client
+import adafruit
 
 cliente = None
+cliente_aio = None
 
 
 def procesar_comando(accion, origen):
@@ -21,6 +23,10 @@ def recepcion_comandos(topic, msg):
     procesar_comando(msg.decode(), "mqtt")
 
 
+def recepcion_adafruit(topic, msg):
+    procesar_comando(msg.decode(), "adafruit")
+
+
 def enviar_telemetria():
     datos = {
         "movimiento": int(sensores.hay_movimiento()),
@@ -29,21 +35,24 @@ def enviar_telemetria():
     }
     print("[TELEMETRIA]", datos)
     mqtt_client.publicar(cliente, mqtt_client.TOPIC_PUB_TELEMETRIA, datos)
+    return datos
 
 
 def main():
-    global cliente
+    global cliente, cliente_aio
     actuadores.iniciar()
     mqtt_client.conectar_wifi()
     cliente = mqtt_client.conectar_broker(recepcion_comandos)
+    cliente_aio = adafruit.conectar(recepcion_adafruit)
 
     boton_antes = False
     estado_antes = None
     vueltas = 0
 
     while True:
-        # Comandos que llegan por MQTT
+        # Comandos de HiveMQ y Adafruit
         cliente.check_msg()
+        cliente_aio.check_msg()
 
         # Boton: solo al presionar
         boton = sensores.boton_presionado()
@@ -66,13 +75,21 @@ def main():
             actuadores.lcd_mostrar("Alarma:", alarma.estado)
             estado_antes = alarma.estado
 
-        # Telemetria cada 10 vueltas = 1 s
+        # Telemetria cada 1 s, Adafruit cada 10 s (limite 30 datos/min)
         vueltas += 1
-        if vueltas == 10:
-            enviar_telemetria()
+        if vueltas % 10 == 0:
+            datos = enviar_telemetria()
+        if vueltas == 100:
+            adafruit.publicar(cliente_aio, datos)
             vueltas = 0
 
         sleep_ms(100)
 
 
-main()
+# Si se cae la red, reconecta todo
+while True:
+    try:
+        main()
+    except OSError as error:
+        print("Conexion perdida:", error)
+        sleep_ms(5000)
