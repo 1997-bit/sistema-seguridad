@@ -1,4 +1,4 @@
-import config
+import configuracion
 import actuadores
 import sensores
 
@@ -20,7 +20,7 @@ def detectar_intrusion():
     if sensores.hay_movimiento():
         return "pir"
     distancia = sensores.medir_distancia()
-    if distancia is not None and distancia < config.DISTANCIA_ALERTA_CM:
+    if distancia is not None and distancia < configuracion.DISTANCIA_ALERTA_CM:
         return "ultrasonic"
     return None
 

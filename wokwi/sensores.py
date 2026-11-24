@@ -1,11 +1,11 @@
 from machine import Pin, time_pulse_us
 from time import sleep_us
-import config
+import configuracion
 
-pir = Pin(config.PIR_PIN, Pin.IN)
-trig = Pin(config.TRIG_PIN, Pin.OUT)
-echo = Pin(config.ECHO_PIN, Pin.IN)
-boton = Pin(config.BOTON_PIN, Pin.IN, Pin.PULL_UP)  # 0 presionado
+pir = Pin(configuracion.PIR_PIN, Pin.IN)
+trig = Pin(configuracion.TRIG_PIN, Pin.OUT)
+echo = Pin(configuracion.ECHO_PIN, Pin.IN)
+boton = Pin(configuracion.BOTON_PIN, Pin.IN, Pin.PULL_UP)  # 0 presionado
 
 
 def hay_movimiento():

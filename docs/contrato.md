@@ -1,8 +1,10 @@
 # Contrato
 
+Nombres de funciones, tópicos, payloads, tablas y feeds que comparten el Pico, el registrador y la nube.
+
 ## Pines
 
-Los define Arles en `wokwi/config.py`.
+Están en `wokwi/configuracion.py`.
 
 ## Sensores (`wokwi/sensores.py`)
 
@@ -36,20 +38,19 @@ Base: `ds8/security/pico1`
 | `/commands` | `armar` |
 | `/ack` | `{"accion":"armar","origen":"mqtt","resultado":"ok"}` |
 
-## Base de datos (SQLite)
+## Base de datos (MariaDB)
 
 | Tabla | Columnas |
 |---|---|
-| `readings` | id, motion, distance, state, timestamp |
-| `events` | id, type, sensor, timestamp |
-| `commands` | id, action, source, result, timestamp |
+| `lecturas` | id, fecha, movimiento, distancia, estado |
+| `eventos` | id, fecha, tipo, sensor |
+| `comandos` | id, fecha, accion, origen, resultado |
 
-## ThingSpeak
+## Adafruit IO
 
-| Campo | Dato |
+| Feed | Dato |
 |---|---|
-| field1 | motion |
-| field2 | distance |
-| field3 | state (0, 1, 2) |
-
-Comandos desde la nube: TalkBack.
+| `movimiento` | 0 o 1 |
+| `distancia` | cm |
+| `estado` | DESARMADO, ARMADO o ALARMA |
+| `comandos` | armar, desarmar o silenciar (desde el dashboard) |

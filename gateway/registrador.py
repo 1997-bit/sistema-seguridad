@@ -2,18 +2,18 @@
 
 import json
 import paho.mqtt.client as mqtt
-import database
+import base_datos
 
 
 def al_recibir(cliente, userdata, msg):
     datos = json.loads(msg.payload)
     print(msg.topic, datos)
     if msg.topic.endswith("telemetry"):
-        database.guardar_lectura(datos)
+        base_datos.guardar_lectura(datos)
     elif msg.topic.endswith("events"):
-        database.guardar_evento(datos)
+        base_datos.guardar_evento(datos)
     elif msg.topic.endswith("ack"):
-        database.guardar_comando(datos)
+        base_datos.guardar_comando(datos)
 
 
 cliente = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, "ds8_seguridad_logger")

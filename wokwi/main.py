@@ -4,7 +4,7 @@ from time import sleep_ms
 import sensores
 import actuadores
 import alarma
-import mqtt_client
+import cliente_mqtt
 import adafruit
 
 cliente = None
@@ -15,7 +15,7 @@ def procesar_comando(accion, origen):
     resultado = alarma.ejecutar_comando(accion)
     datos = {"accion": accion, "origen": origen, "resultado": resultado}
     print("[CMD]", datos)
-    mqtt_client.publicar(cliente, mqtt_client.TOPIC_PUB_ACK, datos)
+    cliente_mqtt.publicar(cliente, cliente_mqtt.TOPIC_PUB_ACK, datos)
     return resultado
 
 
@@ -34,15 +34,15 @@ def enviar_telemetria():
         "estado": alarma.estado,
     }
     print("[TELEMETRIA]", datos)
-    mqtt_client.publicar(cliente, mqtt_client.TOPIC_PUB_TELEMETRIA, datos)
+    cliente_mqtt.publicar(cliente, cliente_mqtt.TOPIC_PUB_TELEMETRIA, datos)
     return datos
 
 
 def main():
     global cliente, cliente_aio
     actuadores.iniciar()
-    mqtt_client.conectar_wifi()
-    cliente = mqtt_client.conectar_broker(recepcion_comandos)
+    cliente_mqtt.conectar_wifi()
+    cliente = cliente_mqtt.conectar_broker(recepcion_comandos)
     cliente_aio = adafruit.conectar(recepcion_adafruit)
 
     boton_antes = False
@@ -68,7 +68,7 @@ def main():
         if sensor:
             datos = {"tipo": "intrusion", "sensor": sensor}
             print("[EVENTO]", datos)
-            mqtt_client.publicar(cliente, mqtt_client.TOPIC_PUB_EVENTOS, datos)
+            cliente_mqtt.publicar(cliente, cliente_mqtt.TOPIC_PUB_EVENTOS, datos)
 
         # LCD solo si cambia estado, evita parpadeo
         if alarma.estado != estado_antes:

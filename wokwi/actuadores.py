@@ -1,16 +1,16 @@
 from machine import Pin, PWM, I2C
 from i2c_lcd import I2cLcd
-import config
+import configuracion
 
 # rgb
-led_rojo = Pin(config.LED_ROJO_PIN, Pin.OUT)
-led_verde = Pin(config.LED_VERDE_PIN, Pin.OUT)
-led_azul = Pin(config.LED_AZUL_PIN, Pin.OUT)
+led_rojo = Pin(configuracion.LED_ROJO_PIN, Pin.OUT)
+led_verde = Pin(configuracion.LED_VERDE_PIN, Pin.OUT)
+led_azul = Pin(configuracion.LED_AZUL_PIN, Pin.OUT)
 
-buzzer = PWM(Pin(config.BUZZER_PIN))
+buzzer = PWM(Pin(configuracion.BUZZER_PIN))
 buzzer.freq(2000)
 
-i2c = I2C(0, sda=Pin(config.LCD_SDA), scl=Pin(config.LCD_SCL), freq=400000)
+i2c = I2C(0, sda=Pin(configuracion.LCD_SDA), scl=Pin(configuracion.LCD_SCL), freq=400000)
 lcd = I2cLcd(i2c, 0x27, 2, 16)
 
 
